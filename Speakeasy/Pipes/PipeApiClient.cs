@@ -1,12 +1,12 @@
 using Speakeasy.Messages;
 
-namespace Speakeasy;
+namespace Speakeasy.Pipes;
 
-public class IPCApiClient : ApiClientBase
+public class PipeApiClient : ApiClientBase
 {
 	private static readonly ApiMessageSerializer Serializer = new();
-	private readonly IPCClient<SocketMessage> Pipe;
-	public IPCApiClient(string pipeName) : base()
+	private readonly PipeClient<SocketMessage> Pipe;
+	public PipeApiClient(string pipeName) : base()
 	{
 		Pipe = new(pipeName, Serializer);
 		Pipe.MessageReceived += (s, e) => HandleMessage(e);

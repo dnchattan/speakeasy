@@ -16,7 +16,7 @@ public class ApiCallerBase<T>
 		Client.EventReceived += Client_EventReceived;
 	}
 
-	private void Client_EventReceived(object? sender, ApiClientEventArgs e)
+	private void Client_EventReceived(object? sender, ApiMessageEventArgs e)
 	{
 		HandleEvent(e.Message);
 	}

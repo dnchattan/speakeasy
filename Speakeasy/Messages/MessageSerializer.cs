@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Speakeasy.Messages;
 
-public class ApiStringSerializer : IPCMessageSerializer<string>
+public class ApiStringSerializer : IMessageSerializer<string>
 {
 	private readonly UnicodeEncoding StreamEncoding = new();
 
@@ -31,7 +31,7 @@ public class ApiStringSerializer : IPCMessageSerializer<string>
 	}
 }
 
-public class ApiMessageSerializer : IPCMessageSerializer<SocketMessage>
+public class ApiMessageSerializer : IMessageSerializer<SocketMessage>
 {
 	private static readonly ApiStringSerializer StringSerializer = new();
 	public async Task<SocketMessage?> ReadMessageAsync(Stream stream, CancellationToken cancellation = default)

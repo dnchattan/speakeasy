@@ -1,19 +1,19 @@
 using System.Collections.Concurrent;
 using System.IO.Pipes;
 
-namespace Speakeasy;
+namespace Speakeasy.Pipes;
 
-public class IPCServer<T> : IDisposable
+public class PipeServer<T> : IDisposable
 {
 	private readonly CancellationTokenSource Cancellation;
 	private readonly ConcurrentBag<IPipeSession<T>> Connections = new();
 	private readonly string PipeName;
-	private readonly IPCMessageSerializer<T> Serializer;
+	private readonly IMessageSerializer<T> Serializer;
 	private bool IsDisposed;
 
 	public event EventHandler<T>? MessageReceived;
 
-	public IPCServer(string pipeName, IPCMessageSerializer<T> serializer)
+	public PipeServer(string pipeName, IMessageSerializer<T> serializer)
 	{
 		PipeName = pipeName;
 		Serializer = serializer;
@@ -32,7 +32,7 @@ public class IPCServer<T> : IDisposable
 
 	public void CreatePendingConnection(object? _state = null)
 	{
-		IPCServerConnection connection = new(PipeName, Serializer);
+		PipeServerConnection connection = new(PipeName, Serializer);
 		connection.MessageReceived += Connection_MessageReceived;
 		Connections.Add(connection);
 		connection.WaitForConnection().ContinueWith(CreatePendingConnection, Cancellation.Token);
@@ -67,9 +67,9 @@ public class IPCServer<T> : IDisposable
 		GC.SuppressFinalize(this);
 	}
 
-	internal class IPCServerConnection : IPCSession<T>
+	private class PipeServerConnection : PipeSession<T>
 	{
-		public IPCServerConnection(string pipeName, IPCMessageSerializer<T> serializer)
+		public PipeServerConnection(string pipeName, IMessageSerializer<T> serializer)
 			: base(new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances), serializer)
 		{ }
 

@@ -1,7 +1,7 @@
 using System.IO.Pipes;
 using System.Runtime.Versioning;
 
-namespace Speakeasy;
+namespace Speakeasy.Pipes;
 
 public interface IPipeSession<T> : IDisposable
 {
@@ -11,10 +11,10 @@ public interface IPipeSession<T> : IDisposable
 	Task SendAsync(T message, CancellationToken cancellationToken = default);
 }
 
-public class IPCSession<T> : IPipeSession<T>, IApiSession<T>
+public abstract class PipeSession<T> : IPipeSession<T>, IApiSession<T>
 {
 	protected PipeStream Pipe;
-	protected readonly IPCMessageSerializer<T> Serializer;
+	protected readonly IMessageSerializer<T> Serializer;
 	protected CancellationToken ListenerCancellationToken;
 	protected bool IsDisposed;
 
@@ -25,7 +25,7 @@ public class IPCSession<T> : IPipeSession<T>, IApiSession<T>
 	public event EventHandler<T>? MessageReceived;
 	public event EventHandler? Closed;
 
-	public IPCSession(PipeStream pipe, IPCMessageSerializer<T> serializer)
+	public PipeSession(PipeStream pipe, IMessageSerializer<T> serializer)
 	{
 		Id = Guid.NewGuid().ToString("n");
 		Pipe = pipe;

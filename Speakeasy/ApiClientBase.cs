@@ -4,10 +4,10 @@ using Speakeasy.Messages;
 
 namespace Speakeasy;
 
-public class ApiClientEventArgs : EventArgs
+public class ApiMessageEventArgs : EventArgs
 {
 	public SendEventMessage Message { get; }
-	public ApiClientEventArgs(SendEventMessage message)
+	public ApiMessageEventArgs(SendEventMessage message)
 	{
 		Message = message;
 	}
@@ -17,7 +17,7 @@ public abstract class ApiClientBase
 {
 	private readonly PromiseStore Promises = new();
 
-	public event EventHandler<ApiClientEventArgs>? EventReceived;
+	public event EventHandler<ApiMessageEventArgs>? EventReceived;
 
 	public abstract Task ConnectAsync(CancellationToken token = default);
 
@@ -44,7 +44,7 @@ public abstract class ApiClientBase
 
 	private void Emit(JToken message)
 	{
-		EventReceived?.Invoke(this, new ApiClientEventArgs(message.ToObject<SendEventMessage>()!));
+		EventReceived?.Invoke(this, new ApiMessageEventArgs(message.ToObject<SendEventMessage>()!));
 	}
 
 	protected void Resolve(JToken message)

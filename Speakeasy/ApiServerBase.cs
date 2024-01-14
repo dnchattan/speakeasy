@@ -93,7 +93,7 @@ public abstract class ApiServer<T> : IApiServer<SocketMessage>
 		}
 		catch (Exception ex)
 		{
-			throw new IPCException($"Could not subscribe to event '{subscriptionMessage.EventName}'", ex);
+			throw new ApiException(ApiError.MessageProcessingFailure, $"Could not subscribe to event '{subscriptionMessage.EventName}'", ex);
 		}
 	}
 
@@ -109,7 +109,7 @@ public abstract class ApiServer<T> : IApiServer<SocketMessage>
 		}
 		catch (Exception ex)
 		{
-			throw new IPCException($"Could not unsubscribe from event '{subscriptionMessage.EventName}'", ex);
+			throw new ApiException(ApiError.MessageProcessingFailure, $"Could not unsubscribe from event '{subscriptionMessage.EventName}'", ex);
 		}
 	}
 
@@ -132,7 +132,7 @@ public abstract class ApiServer<T> : IApiServer<SocketMessage>
 		}
 		catch (Exception ex)
 		{
-			throw new IPCException($"Failed to send '{eventMember.Name}' event", ex);
+			throw new ApiException(ApiError.MessageProcessingFailure, $"Failed to send '{eventMember.Name}' event", ex);
 		}
 	}
 

@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace Speakeasy;
 
-public record ApiMemberDefinition(string Contract, MemberInfo MemberInfo, PublicApiAttribute Attribute)
+internal record ApiMemberDefinition(string Contract, MemberInfo MemberInfo, PublicApiAttribute Attribute)
 {
 	public string Name => MemberInfo.Name;
 	public string PublicName => Attribute.Name;
@@ -37,13 +37,13 @@ internal class PublicApiInfo<T>
 			contractName = member.Contract;
 			return result;
 		}
-		throw new MissingMethodException(member?.Contract ?? "", name);
+		throw new ApiException(ApiError.UnknownContract, $"Unknown contract {member?.Contract}.{name}");
 	}
 
 	public ApiMemberDefinition GetMember<U>(string memberName) where U : MemberInfo
 	{
 		return PublicApiByMemberName.TryGetValue(memberName, out ApiMemberDefinition? member) && member.MemberInfo is U
 			? member
-			: throw new MissingMethodException(member?.Contract ?? "", memberName);
+			: throw new ApiException(ApiError.UnknownContract, $"Unknown contract {member?.Contract}.{memberName}");
 	}
 }

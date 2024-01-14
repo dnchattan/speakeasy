@@ -1,6 +1,6 @@
 namespace Newtonsoft.Json.Linq;
 
-public static class JsonExtensions
+internal static class JsonExtensions
 {
 	public static T ToObjectOrThrow<T>(this JToken obj)
 	{

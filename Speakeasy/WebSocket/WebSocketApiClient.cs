@@ -1,9 +1,9 @@
 using System.Net.WebSockets;
 using Speakeasy.Messages;
 
-namespace Speakeasy;
+namespace Speakeasy.WebSocket;
 
-public class SocketApiClient : ApiClientBase
+public class WebSocketApiClient : ApiClientBase
 {
 	private readonly Memory<byte> Buffer = new(new byte[1024 * 1024 * 16]);
 	private static readonly ApiMessageSerializer Serializer = new();
@@ -11,12 +11,12 @@ public class SocketApiClient : ApiClientBase
 	private readonly Uri EndpointUri;
 	private readonly CancellationTokenSource CancellationTokenSource = new();
 
-	public SocketApiClient(int port) : base()
+	public WebSocketApiClient(int port) : base()
 	{
 		EndpointUri = new Uri($"ws://localhost:{port}");
 	}
 
-	public SocketApiClient(Uri? endpointUri = null) : base()
+	public WebSocketApiClient(Uri? endpointUri = null) : base()
 	{
 		EndpointUri = endpointUri ?? new Uri("ws://localhost:9090");
 	}
