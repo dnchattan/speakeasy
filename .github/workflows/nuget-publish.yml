@@ -69,7 +69,7 @@ jobs:
         run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
 
       - name: Build Project
-        run: msbuild $env:Solution_Name -m -t:"Build;Pack" -p:Configuration=Release -p:Platform=x64 -p:PackageOutputPath="$(Get-Location)\publish\nuget"
+        run: msbuild $env:Solution_Name -m -t:"Build;Pack" -p:Configuration=Release -p:PackageOutputPath="$(Get-Location)\publish\nuget"
 
       # NuGet Push
       - name: Push client package to Nuget registry
