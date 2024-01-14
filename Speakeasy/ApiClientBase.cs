@@ -6,10 +6,12 @@ namespace Speakeasy;
 
 public class ApiMessageEventArgs : EventArgs
 {
+	public string ContractName { get; }
 	public SendEventMessage Message { get; }
-	public ApiMessageEventArgs(SendEventMessage message)
+	public ApiMessageEventArgs(string contractName, SendEventMessage message)
 	{
 		Message = message;
+		ContractName = contractName;
 	}
 }
 
@@ -35,16 +37,16 @@ public abstract class ApiClientBase
 				Resolve(socketMessage.Message);
 				return;
 			case "send-event":
-				Emit(socketMessage.Message);
+				Emit(socketMessage.ContractName, socketMessage.Message);
 				return;
 			default:
 				break;
 		}
 	}
 
-	private void Emit(JToken message)
+	private void Emit(string contractName, JToken message)
 	{
-		EventReceived?.Invoke(this, new ApiMessageEventArgs(message.ToObject<SendEventMessage>()!));
+		EventReceived?.Invoke(this, new ApiMessageEventArgs(contractName, message.ToObject<SendEventMessage>()!));
 	}
 
 	protected void Resolve(JToken message)

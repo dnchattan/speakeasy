@@ -70,7 +70,7 @@ public class PipeServer<T> : IDisposable
 	private class PipeServerConnection : PipeSession<T>
 	{
 		public PipeServerConnection(string pipeName, IMessageSerializer<T> serializer)
-			: base(new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances), serializer)
+			: base(new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous), serializer)
 		{ }
 
 		public async Task WaitForConnection()

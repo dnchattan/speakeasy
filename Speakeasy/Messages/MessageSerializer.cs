@@ -9,25 +9,15 @@ public class ApiStringSerializer : IMessageSerializer<string>
 
 	public async Task<string?> ReadMessageAsync(Stream stream, CancellationToken cancellation = default)
 	{
-		byte[] byteSize = new byte[sizeof(int)];
-		await stream.ReadAsync(byteSize, cancellation);
-		int len = BitConverter.ToInt32(byteSize, 0);
-		if (len <= 0)
-			return null;
-		var inBuffer = new byte[len];
-		await stream.ReadAsync(inBuffer.AsMemory(0, len), cancellation);
-		return StreamEncoding.GetString(inBuffer);
+		using StreamReader sr = new(stream, StreamEncoding, false, 1024, true);
+		return await sr.ReadLineAsync(cancellation);
 	}
 
 	public async Task<int> WriteMessageAsync(Stream stream, string outString, CancellationToken cancellation = default)
 	{
-		byte[] outBuffer = StreamEncoding.GetBytes(outString);
-		int len = outBuffer.Length;
-		await stream.WriteAsync(BitConverter.GetBytes(len), cancellation);
-		await stream.WriteAsync(outBuffer.AsMemory(0, len), cancellation);
-		await stream.FlushAsync(cancellation);
-
-		return outBuffer.Length + 2;
+		using StreamWriter sw = new(stream, StreamEncoding, 1024, true);
+		await sw.WriteLineAsync(outString);
+		return outString.Length + 2;
 	}
 }
 

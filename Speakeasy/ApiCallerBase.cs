@@ -18,6 +18,8 @@ public class ApiCallerBase<T>
 
 	private void Client_EventReceived(object? sender, ApiMessageEventArgs e)
 	{
+		if (e.ContractName != Api.Name)
+			return;
 		HandleEvent(e.Message);
 	}
 
